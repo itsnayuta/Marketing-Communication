@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-baka}
+      POSTGRES_USER: ${POSTGRES_USER:-baka}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-baka} -d ${POSTGRES_DB:-baka}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+      MEDIA_ROOT: /app/data
+    ports:
+      - "8000:8000"
+    volumes:
+      - uploads_data:/app/data
+      - ./backups:/app/backups
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  uploads_data:

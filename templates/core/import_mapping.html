@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Mapping cột · BAKA{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Import Wizard · Bước 3/5</p><h1>Column Mapping</h1><p>{{ batch.platform.name }} · {{ batch.original_filename }} · {{ batch.total_rows }} dòng</p></div><form method="post">{% csrf_token %}<input type="hidden" name="action" value="ai"><button class="btn btn-ai" type="submit">✦ Gợi ý mapping</button></form></div>
+<div class="stepper">{% for number in '12345' %}<div class="step {% if forloop.counter <= 3 %}active{% endif %}"><span>{{ forloop.counter }}</span><small>{% cycle 'Nền tảng' 'Tải file' 'Mapping' 'Xem trước' 'Xác nhận' %}</small></div>{% endfor %}</div>
+<div class="panel mapping-panel"><div class="mapping-head"><span>Trường chuẩn BAKA</span><span>Cột trong file nguồn</span></div><form method="post">{% csrf_token %}
+  <div class="profile-options"><div>{{ form.profile_name.label_tag }}{{ form.profile_name }}</div><label class="check-line">{{ form.save_profile }} {{ form.save_profile.label }}</label></div>
+  {% for field in form %}{% if field.name != 'profile_name' and field.name != 'save_profile' %}<div class="mapping-row"><label>{{ field.label }}</label><span class="mapping-arrow">→</span><div>{{ field }}{% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}</div></div>{% endif %}{% endfor %}
+  <div class="form-actions"><a class="btn btn-light" href="{% url 'import-upload' %}?platform={{ batch.platform_id }}">Quay lại</a><button class="btn btn-primary">Tạo bản xem trước →</button></div>
+</form></div>
+{% endblock %}
+

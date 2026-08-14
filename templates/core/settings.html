@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Cấu hình · BAKA{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Hệ thống</p><h1>Cấu hình</h1><p>Thông tin runtime không chứa giá trị secret.</p></div></div>
+<div class="settings-grid"><article class="panel"><div class="panel-head"><h2>Tài khoản</h2></div><dl class="definition-grid"><dt>Username</dt><dd>{{ request.user.username }}</dd><dt>Quyền chỉnh sửa</dt><dd>{% if can_edit %}ADMIN{% else %}VIEWER{% endif %}</dd><dt>Technical admin</dt><dd>{% if request.user.is_staff %}<a href="/admin/">Mở Django Admin</a>{% else %}Không có quyền{% endif %}</dd></dl></article><article class="panel"><div class="panel-head"><h2>AI</h2></div><dl class="definition-grid"><dt>Trạng thái</dt><dd>{% if ai_enabled %}<span class="quality quality-good">Đã bật</span>{% else %}<span class="quality quality-warning">Đang tắt</span>{% endif %}</dd><dt>API key</dt><dd>Chỉ đọc từ environment</dd><dt>Fallback</dt><dd>Luôn hoạt động</dd></dl></article><article class="panel"><div class="panel-head"><h2>Lưu trữ</h2></div><dl class="definition-grid"><dt>Database</dt><dd>PostgreSQL</dd><dt>Uploads</dt><dd>Persistent volume</dd><dt>Backups</dt><dd><code>/app/backups</code></dd></dl></article></div>
+{% endblock %}
+

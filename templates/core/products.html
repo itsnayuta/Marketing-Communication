@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% load baka_tags %}
+{% block title %}Product Master · BAKA{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Danh mục</p><h1>Product Master</h1><p>Sản phẩm chuẩn nội bộ; không tự sinh từ tên bên ngoài.</p></div><button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#productForm">+ Thêm sản phẩm</button></div>
+<div class="collapse {% if form.errors %}show{% endif %}" id="productForm"><form class="panel inline-form" method="post">{% csrf_token %}{% for field in form %}<div><label>{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}</div>{% endfor %}<button class="btn btn-primary">Lưu sản phẩm</button></form></div>
+<form class="filter-bar" method="get"><label class="grow">Tìm sản phẩm<input class="form-control" name="q" value="{{ request.GET.q }}" placeholder="SKU hoặc tên sản phẩm"></label><button class="btn btn-primary align-self-end">Tìm</button></form>
+<div class="table-panel"><div class="table-responsive"><table class="data-table"><thead><tr><th>Internal SKU</th><th>Tên sản phẩm</th><th>Phân loại</th><th>Default cost</th><th>Aliases</th><th>Trạng thái</th></tr></thead><tbody>{% for product in products %}<tr><td><b>{{ product.internal_sku }}</b></td><td>{{ product.product_name }}</td><td>{{ product.variant_name|default:'—' }}</td><td>{{ product.default_cost|vnd }}</td><td>{{ product.aliases.count }}</td><td>{% if product.is_active %}<span class="quality quality-good">Đang dùng</span>{% else %}<span class="quality">Tạm dừng</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="6" class="empty-state">Chưa có Product Master.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}
+

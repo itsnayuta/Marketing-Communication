@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Nhập dữ liệu · BAKA{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Import Wizard</p><h1>{{ title }}</h1><p>{% if platform %}{{ platform.name }} · {% endif %}Bước {{ step }} trên 5</p></div></div>
+<div class="stepper">{% for number in '12345' %}<div class="step {% if forloop.counter <= step %}active{% endif %}"><span>{{ forloop.counter }}</span><small>{% cycle 'Nền tảng' 'Tải file' 'Mapping' 'Xem trước' 'Xác nhận' %}</small></div>{% endfor %}</div>
+<div class="panel form-panel"><form method="post" enctype="multipart/form-data" class="form-stack">{% csrf_token %}
+  {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+  {% for field in form.visible_fields %}<div><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}{% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}</div>{% endfor %}
+  {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+  <div class="form-actions"><a class="btn btn-light" href="{% url 'import-start' %}">Quay lại</a><button class="btn btn-primary" type="submit">Tiếp tục →</button></div>
+</form></div>
+{% endblock %}
+

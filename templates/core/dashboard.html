@@ -1,0 +1,31 @@
+{% extends 'base.html' %}{% load static baka_tags %}
+{% block title %}Dashboard · BAKA{% endblock %}
+{% block head %}<script src="{% static 'vendor/chart.umd.min.js' %}"></script>{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Tổng quan</p><h1>Dashboard</h1><p>Theo dõi hiệu quả kinh doanh và chất lượng dữ liệu.</p></div></div>
+<form class="filter-bar" method="get">
+  <label>Từ ngày<input class="form-control" type="date" name="date_from" value="{{ request.GET.date_from }}"></label>
+  <label>Đến ngày<input class="form-control" type="date" name="date_to" value="{{ request.GET.date_to }}"></label>
+  <label>Nền tảng<select class="form-select" name="platform"><option value="">Tất cả</option>{% for p in platforms %}<option value="{{ p.pk }}" {% if request.GET.platform == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.name }}</option>{% endfor %}</select></label>
+  <button class="btn btn-primary align-self-end">Áp dụng</button>
+</form>
+<div class="kpi-grid">
+  <article class="kpi-card"><span>Đơn hàng</span><strong>{{ orders_count|default:0 }}</strong><small>Tổng số đơn</small></article>
+  <article class="kpi-card"><span>Sản lượng</span><strong>{{ quantity|default:0 }}</strong><small>Sản phẩm đã bán</small></article>
+  <article class="kpi-card"><span>Doanh thu gộp</span><strong>{{ finance.gross|vnd }}</strong><small>Trước hoàn tiền</small></article>
+  <article class="kpi-card accent"><span>Doanh thu thuần</span><strong>{{ finance.net|vnd }}</strong><small>Sau hoàn tiền</small></article>
+  <article class="kpi-card"><span>Phí nền tảng</span><strong>{{ finance.fee|vnd }}</strong><small>Chi phí sàn</small></article>
+  <article class="kpi-card"><span>Affiliate</span><strong>{{ finance.affiliate|vnd }}</strong><small>Hoa hồng</small></article>
+  <article class="kpi-card"><span>COGS</span><strong>{{ finance.cogs|vnd }}</strong><small>Giá vốn</small></article>
+  <article class="kpi-card profit"><span>Lợi nhuận đóng góp</span><strong>{{ finance.profit|vnd }}</strong><small>Sau chi phí biến đổi</small></article>
+  <article class="kpi-card warning"><span>Vấn đề dữ liệu</span><strong>{{ issues_count }}</strong><small>Chưa xử lý</small></article>
+</div>
+<div class="chart-grid">
+  <article class="panel chart-wide"><div class="panel-head"><h2>Doanh thu theo ngày</h2></div><canvas id="revenueDay"></canvas></article>
+  <article class="panel"><div class="panel-head"><h2>Sản lượng theo ngày</h2></div><canvas id="quantityDay"></canvas></article>
+  <article class="panel"><div class="panel-head"><h2>Doanh thu theo nền tảng</h2></div><canvas id="revenuePlatform"></canvas></article>
+  <article class="panel"><div class="panel-head"><h2>Lợi nhuận theo nền tảng</h2></div><canvas id="profitPlatform"></canvas></article>
+</div>
+{{ chart_data|json_script:"chart-data" }}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Chất lượng dữ liệu · BAKA{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Trung tâm dữ liệu</p><h1>Data Quality Center</h1><p>{{ page_obj.paginator.count }} vấn đề phù hợp bộ lọc.</p></div><a class="btn btn-ai" href="?{{ request.GET.urlencode }}&explain=1">✦ Giải thích anomaly</a></div>
+{% if ai_explanation %}<article class="panel ai-summary"><div class="panel-head"><h2>✦ Phân tích chất lượng dữ liệu</h2><span class="quality">Nguồn: {{ ai_explanation.source }}</span></div><p>{{ ai_explanation.summary }}</p><ul>{% for recommendation in ai_explanation.recommendations %}<li>{{ recommendation }}</li>{% endfor %}</ul></article>{% endif %}
+<form class="filter-bar filter-wide" method="get">
+  <label>Mức độ<select class="form-select" name="severity"><option value="">Tất cả</option><option value="ERROR">Lỗi</option><option value="WARNING">Cảnh báo</option></select></label>
+  <label>Nền tảng<select class="form-select" name="platform"><option value="">Tất cả</option>{% for p in platforms %}<option value="{{ p.pk }}">{{ p.name }}</option>{% endfor %}</select></label>
+  <label>Batch<select class="form-select" name="batch"><option value="">Tất cả</option>{% for b in batches %}<option value="{{ b.pk }}">#{{ b.pk }} · {{ b.original_filename }}</option>{% endfor %}</select></label>
+  <label>Field<input class="form-control" name="field" value="{{ request.GET.field }}"></label>
+  <label>Trạng thái<select class="form-select" name="status"><option value="">Tất cả</option><option value="OPEN">Chưa xử lý</option><option value="RESOLVED">Đã xử lý</option></select></label>
+  <button class="btn btn-primary align-self-end">Lọc</button>
+</form>
+<div class="table-panel"><div class="table-responsive"><table class="data-table"><thead><tr><th>Mức độ</th><th>Platform</th><th>Batch / Row</th><th>Field</th><th>Giá trị</th><th>Thông báo</th><th>Order</th><th>Trạng thái</th><th></th></tr></thead><tbody>{% for issue in page_obj %}<tr><td><span class="severity severity-{{ issue.severity|lower }}">{{ issue.get_severity_display }}</span></td><td>{{ issue.import_batch.platform.name }}</td><td><a href="{% url 'batch-detail' issue.import_batch_id %}">#{{ issue.import_batch_id }}</a>{% if issue.raw_record %} / {{ issue.raw_record.row_number }}{% endif %}</td><td><code>{{ issue.field_name }}</code></td><td>{{ issue.current_value|truncatechars:30|default:'—' }}</td><td>{{ issue.message }}</td><td>{% if issue.order %}<a href="{% url 'order-detail' issue.order_id %}">{{ issue.order.external_order_id }}</a>{% else %}—{% endif %}</td><td>{{ issue.get_status_display }}</td><td>{% if issue.status == 'OPEN' %}<form method="post" action="{% url 'resolve-issue' issue.pk %}" hx-post="{% url 'resolve-issue' issue.pk %}" hx-target="closest tr" hx-swap="outerHTML">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="btn btn-sm btn-light">Đánh dấu xử lý</button></form>{% endif %}</td></tr>{% empty %}<tr><td colspan="9" class="empty-state">Không có vấn đề dữ liệu.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

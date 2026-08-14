@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Lịch sử nhập · BAKA{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Trung tâm dữ liệu</p><h1>Lịch sử nhập</h1><p>Theo dõi mọi batch và nguồn dữ liệu.</p></div><a class="btn btn-primary" href="{% url 'import-start' %}">+ Nhập dữ liệu</a></div>
+<div class="table-panel"><div class="table-responsive"><table class="data-table"><thead><tr><th>Ngày</th><th>Platform</th><th>Filename</th><th>Rows</th><th>Success</th><th>Warning</th><th>Error</th><th>Duplicate</th><th>Status</th><th>Thời gian</th></tr></thead><tbody>{% for batch in batches %}<tr><td>{{ batch.created_at|date:'d/m/Y H:i' }}</td><td>{{ batch.platform.name }}</td><td><a class="table-link" href="{% url 'batch-detail' batch.pk %}">{{ batch.original_filename }}</a><small class="d-block text-muted">{{ batch.file_hash|truncatechars:18 }}</small></td><td>{{ batch.total_rows }}</td><td>{{ batch.success_rows }}</td><td>{{ batch.warning_rows }}</td><td>{{ batch.error_rows }}</td><td>{{ batch.duplicate_rows }}</td><td><span class="quality quality-{{ batch.status|lower }}">{{ batch.get_status_display }}</span></td><td>{{ batch.processing_seconds|default:'—' }}{% if batch.processing_seconds %}s{% endif %}</td></tr>{% empty %}<tr><td colspan="10" class="empty-state">Chưa có batch import.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}
+

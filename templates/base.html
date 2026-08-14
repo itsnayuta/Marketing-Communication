@@ -1,0 +1,58 @@
+{% load static baka_tags %}
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}BAKA Data Center{% endblock %}</title>
+  <link href="{% static 'vendor/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/app.css' %}" rel="stylesheet">
+  <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="{% url 'dashboard' %}">
+        <span class="brand-mark">B</span><span>BAKA <small>DATA CENTER</small></span>
+      </a>
+      <nav class="sidebar-nav">
+        <p class="nav-section">Tổng quan</p>
+        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><span>◫</span> Dashboard</a>
+        <p class="nav-section">Trung tâm dữ liệu</p>
+        <a class="nav-link {% if request.resolver_match.url_name == 'orders' %}active{% endif %}" href="{% url 'orders' %}"><span>▤</span> Đơn hàng</a>
+        <a class="nav-link {% if 'import-' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'import-start' %}"><span>⇧</span> Nhập dữ liệu</a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'import-history' or request.resolver_match.url_name == 'batch-detail' %}active{% endif %}" href="{% url 'import-history' %}"><span>◷</span> Lịch sử nhập</a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'data-quality' %}active{% endif %}" href="{% url 'data-quality' %}"><span>◇</span> Chất lượng dữ liệu</a>
+        <p class="nav-section">Danh mục</p>
+        <a class="nav-link {% if request.resolver_match.url_name == 'products' %}active{% endif %}" href="{% url 'products' %}"><span>▦</span> Sản phẩm</a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'product-aliases' %}active{% endif %}" href="{% url 'product-aliases' %}"><span>⇄</span> Mapping sản phẩm</a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'mapping-profiles' %}active{% endif %}" href="{% url 'mapping-profiles' %}"><span>⌘</span> Mapping cột</a>
+        <p class="nav-section">AI</p>
+        <a class="nav-link {% if request.resolver_match.url_name == 'ai-assistant' %}active{% endif %}" href="{% url 'ai-assistant' %}"><span>✦</span> Trợ lý dữ liệu</a>
+        <p class="nav-section">Hệ thống</p>
+        <a class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" href="{% url 'settings' %}"><span>⚙</span> Cấu hình</a>
+      </nav>
+    </aside>
+    <div class="main-wrap">
+      <header class="topbar">
+        <button class="sidebar-toggle" type="button" aria-label="Mở menu" onclick="document.body.classList.toggle('sidebar-open')">☰</button>
+        <div class="topbar-title">Trung tâm vận hành dữ liệu</div>
+        <div class="user-menu">
+          <span class="status-dot"></span>
+          <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn-link" type="submit">Đăng xuất</button></form>
+        </div>
+      </header>
+      <main class="content">
+        {% if messages %}
+          {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show">{{ message }}<button class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  <script src="{% static 'vendor/bootstrap.bundle.min.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% load static %}
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đăng nhập · BAKA Data Center</title>
+  <link href="{% static 'vendor/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/app.css' %}" rel="stylesheet">
+</head>
+<body class="login-page">
+  <div class="login-card">
+    <div class="brand login-brand"><span class="brand-mark">B</span><span>BAKA <small>DATA CENTER</small></span></div>
+    <div class="login-copy"><h1>Chào mừng trở lại</h1><p>Đăng nhập để quản lý dữ liệu đơn hàng.</p></div>
+    {% if form.errors %}<div class="alert alert-danger">Tên đăng nhập hoặc mật khẩu không đúng.</div>{% endif %}
+    <form method="post" class="form-stack">{% csrf_token %}
+      <label>Tên đăng nhập {{ form.username }}</label>
+      <label>Mật khẩu {{ form.password }}</label>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button class="btn btn-primary btn-lg w-100" type="submit">Đăng nhập</button>
+    </form>
+    <p class="login-note">Dữ liệu được lưu trong hệ thống nội bộ của bạn.</p>
+  </div>
+</body>
+</html>

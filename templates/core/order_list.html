@@ -1,0 +1,29 @@
+{% extends 'base.html' %}{% load baka_tags %}
+{% block title %}Đơn hàng · BAKA{% endblock %}
+{% block content %}
+<div class="page-header"><div><p class="eyebrow">Trung tâm dữ liệu</p><h1>Đơn hàng</h1><p>{{ page_obj.paginator.count }} đơn hàng chuẩn hóa.</p></div><div class="page-actions"><a class="btn btn-outline-primary" href="{% url 'order-export' 'csv' %}?{{ request.GET.urlencode }}">CSV</a><a class="btn btn-outline-primary" href="{% url 'order-export' 'xlsx' %}?{{ request.GET.urlencode }}">XLSX</a><a class="btn btn-primary" href="{% url 'import-start' %}">+ Nhập dữ liệu</a></div></div>
+<form class="filter-bar filter-wide" method="get">
+  <label class="grow">Tìm kiếm<input class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Mã đơn, user, vận đơn, SKU..."></label>
+  <label>Nền tảng<select class="form-select" name="platform"><option value="">Tất cả</option>{% for p in platforms %}<option value="{{ p.pk }}" {% if request.GET.platform == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.name }}</option>{% endfor %}</select></label>
+  <label>Trạng thái<select class="form-select" name="status"><option value="">Tất cả</option>{% for value in statuses %}<option {% if request.GET.status == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+  <label>Chất lượng<select class="form-select" name="quality"><option value="">Tất cả</option><option value="GOOD">Tốt</option><option value="WARNING">Cảnh báo</option><option value="ERROR">Lỗi</option></select></label>
+  <label>SKU<input class="form-control" name="sku" value="{{ request.GET.sku }}"></label>
+  <label>Từ ngày<input class="form-control" type="date" name="date_from" value="{{ request.GET.date_from }}"></label>
+  <label>Đến ngày<input class="form-control" type="date" name="date_to" value="{{ request.GET.date_to }}"></label>
+  <button class="btn btn-primary align-self-end">Lọc</button>
+</form>
+<div class="table-panel"><div class="table-responsive table-scroll"><table class="data-table">
+  <thead><tr><th>Platform</th><th><a href="?{{ request.GET.urlencode }}&sort=external_order_id">Order ID</a></th><th>Ngày</th><th>User ID</th><th>Shipping ID</th><th>SKU / Sản phẩm</th><th>SL</th><th>Gross</th><th>Net</th><th>Platform fee</th><th>COGS</th><th>Affiliate</th><th>Contribution</th><th>Trạng thái</th><th>Chất lượng</th></tr></thead>
+  <tbody>{% for order in page_obj %}<tr>
+    <td><span class="platform-badge platform-{{ order.platform.code|lower }}">{{ order.platform.name }}</span></td>
+    <td><a class="table-link" href="{% url 'order-detail' order.pk %}">{{ order.external_order_id }}</a></td>
+    <td class="nowrap">{{ order.order_created_at|date:'d/m/Y H:i' }}</td><td>{{ order.platform_user_id|default:'—' }}</td><td>{{ order.shipping_id|default:'—' }}</td>
+    <td>{% for item in order.items.all %}<div><b>{{ item.external_sku|default:'UNMAPPED' }}</b> · {{ item.product_name_snapshot }}</div>{% endfor %}</td>
+    <td>{% for item in order.items.all %}{{ item.quantity }}{% if not forloop.last %} + {% endif %}{% endfor %}</td>
+    <td>{{ order.financial.gross_revenue|vnd }}</td><td>{{ order.financial.net_revenue|vnd }}</td><td>{{ order.financial.platform_fee|vnd }}</td><td>{{ order.financial.cost_of_goods|vnd }}</td><td>{{ order.financial.affiliate_commission|vnd }}</td><td class="money-positive">{{ order.financial.contribution_profit|vnd }}</td>
+    <td>{{ order.order_status|default:'—' }}</td><td><span class="quality quality-{{ order.data_quality_status|lower }}">{{ order.get_data_quality_status_display }}</span></td>
+  </tr>{% empty %}<tr><td colspan="15" class="empty-state">Chưa có đơn hàng phù hợp.</td></tr>{% endfor %}</tbody>
+</table></div>
+<div class="pagination-bar"><form><input type="hidden" name="q" value="{{ request.GET.q }}"><select class="form-select" name="per_page" onchange="this.form.submit()"><option value="10" {% if per_page == 10 %}selected{% endif %}>10</option><option value="25" {% if per_page == 25 %}selected{% endif %}>25</option><option value="50" {% if per_page == 50 %}selected{% endif %}>50</option><option value="100" {% if per_page == 100 %}selected{% endif %}>100</option></select></form><span>Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span><div>{% if page_obj.has_previous %}<a class="btn btn-sm btn-light" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">←</a>{% endif %}{% if page_obj.has_next %}<a class="btn btn-sm btn-light" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">→</a>{% endif %}</div></div>
+</div>
+{% endblock %}
