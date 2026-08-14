@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -187,3 +188,26 @@ class AITests(TestCase):
         self.assertEqual(product["suggestions"][0]["internal_sku"], "BAKA-01")
         self.assertIn("UNMAPPED_PRODUCT", anomaly["summary"])
         self.assertIn("10", summary["summary"])
+
+
+class UXNavigationTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username="viewer", password="test-password")
+        self.client.force_login(self.user)
+
+    def test_app_shell_uses_partial_navigation_without_cdn(self):
+        response = self.client.get("/", HTTP_HOST="localhost")
+        self.assertContains(response, 'hx-boost="true"')
+        self.assertContains(response, 'hx-target="#content"')
+        self.assertContains(response, 'id="content"')
+        self.assertContains(response, "/static/vendor/htmx.min")
+        self.assertNotContains(response, "unpkg.com")
+        self.assertNotContains(response, "cdn.jsdelivr.net")
+
+    def test_htmx_navigation_returns_content_only(self):
+        full = self.client.get("/", HTTP_HOST="localhost")
+        partial = self.client.get("/", HTTP_HOST="localhost", HTTP_HX_REQUEST="true")
+        self.assertEqual(partial.status_code, 200)
+        self.assertContains(partial, 'id="content"')
+        self.assertNotContains(partial, "app-sidebar")
+        self.assertLess(len(partial.content), len(full.content))

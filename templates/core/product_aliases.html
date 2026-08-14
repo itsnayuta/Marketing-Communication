@@ -1,8 +1,7 @@
-{% extends 'base.html' %}
+{% extends base_template %}
 {% block title %}Mapping sản phẩm · BAKA{% endblock %}
 {% block content %}
 <div class="page-header"><div><p class="eyebrow">Danh mục</p><h1>Mapping sản phẩm</h1><p>Liên kết SKU/tên ngoài với Product Master.</p></div><button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#aliasForm">+ Thêm mapping</button></div>
 <div class="collapse {% if form.errors %}show{% endif %}" id="aliasForm"><form class="panel inline-form" method="post">{% csrf_token %}{% for field in form %}<div><label>{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}</div>{% endfor %}{% for e in form.non_field_errors %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}<button class="btn btn-primary">Xác nhận mapping</button></form></div>
 <div class="table-panel"><div class="table-responsive"><table class="data-table"><thead><tr><th>Platform</th><th>External SKU</th><th>Tên bên ngoài</th><th></th><th>Internal SKU</th><th>Product Master</th><th>Nguồn</th><th>Confidence</th></tr></thead><tbody>{% for alias in aliases %}<tr><td>{{ alias.platform.name }}</td><td><b>{{ alias.external_sku|default:'—' }}</b></td><td>{{ alias.external_product_name|default:'—' }}</td><td>→</td><td><b>{{ alias.product.internal_sku }}</b></td><td>{{ alias.product.product_name }}</td><td>{{ alias.get_mapping_source_display }}</td><td>{{ alias.confidence }}</td></tr>{% empty %}<tr><td colspan="8" class="empty-state">Chưa có mapping sản phẩm.</td></tr>{% endfor %}</tbody></table></div></div>
 {% endblock %}
-

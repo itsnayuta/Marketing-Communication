@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load baka_tags %}
+{% extends base_template %}{% load baka_tags %}
 {% block title %}{{ order.external_order_id }} · BAKA{% endblock %}
 {% block content %}
 <div class="page-header"><div><a class="back-link" href="{% url 'orders' %}">← Danh sách đơn hàng</a><h1>{{ order.external_order_id }}</h1><p>{{ order.platform.name }} · {{ order.order_created_at|date:'d/m/Y H:i' }}</p></div><span class="quality quality-{{ order.data_quality_status|lower }}">{{ order.get_data_quality_status_display }}</span></div>
@@ -15,4 +15,3 @@
 <article class="panel"><div class="panel-head"><h2>Chất lượng dữ liệu</h2></div>{% for issue in order.quality_issues.all %}<div class="issue-row"><span class="severity severity-{{ issue.severity|lower }}">{{ issue.get_severity_display }}</span><b>{{ issue.field_name }}</b><span>{{ issue.message }}</span></div>{% empty %}<div class="empty-state">Không có vấn đề dữ liệu.</div>{% endfor %}</article>
 <article class="panel"><div class="panel-head"><h2>Nguồn import & RAW data</h2><a href="{% url 'batch-detail' order.import_batch_id %}">Batch #{{ order.import_batch_id }}</a></div>{% for record in raw_records %}<details class="raw-block"><summary>Dòng {{ record.row_number }} · {{ record.get_processing_status_display }}</summary><pre>{{ record.raw_data|json_pretty }}</pre></details>{% empty %}<p>Không tìm thấy RAW row tương ứng.</p>{% endfor %}</article>
 {% endblock %}
-

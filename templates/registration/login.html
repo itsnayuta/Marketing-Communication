@@ -1,24 +1,34 @@
 {% load static %}
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-bs-theme="light">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
   <title>Đăng nhập · BAKA Data Center</title>
-  <link href="{% static 'vendor/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/tabler/tabler.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/tabler/tabler-icons.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/app.css' %}" rel="stylesheet">
 </head>
 <body class="login-page">
-  <div class="login-card">
-    <div class="brand login-brand"><span class="brand-mark">B</span><span>BAKA <small>DATA CENTER</small></span></div>
-    <div class="login-copy"><h1>Chào mừng trở lại</h1><p>Đăng nhập để quản lý dữ liệu đơn hàng.</p></div>
-    {% if form.errors %}<div class="alert alert-danger">Tên đăng nhập hoặc mật khẩu không đúng.</div>{% endif %}
+  <main class="login-card">
+    <div class="login-brand">
+      <span class="brand-symbol">B</span>
+      <span class="brand-copy"><b class="text-dark">BAKA</b><small>DATA CENTER</small></span>
+    </div>
+    <div class="login-copy">
+      <div class="eyebrow">Không gian làm việc nội bộ</div>
+      <h1>Chào mừng trở lại</h1>
+      <p>Đăng nhập để tiếp tục vận hành dữ liệu đơn hàng.</p>
+    </div>
+    {% if form.errors %}<div class="alert alert-danger" role="alert"><div class="d-flex"><i class="ti ti-alert-circle me-2"></i><div>Tên đăng nhập hoặc mật khẩu không đúng.</div></div></div>{% endif %}
     <form method="post" class="form-stack">{% csrf_token %}
-      <label>Tên đăng nhập {{ form.username }}</label>
-      <label>Mật khẩu {{ form.password }}</label>
+      <div><label class="form-label" for="{{ form.username.id_for_label }}">Tên đăng nhập</label><div class="input-icon"><span class="input-icon-addon"><i class="ti ti-user"></i></span>{{ form.username }}</div></div>
+      <div><label class="form-label" for="{{ form.password.id_for_label }}">Mật khẩu</label><div class="input-icon"><span class="input-icon-addon"><i class="ti ti-lock"></i></span>{{ form.password }}</div></div>
       <input type="hidden" name="next" value="{{ next }}">
-      <button class="btn btn-primary btn-lg w-100" type="submit">Đăng nhập</button>
+      <button class="btn btn-primary btn-lg w-100" type="submit"><i class="ti ti-login-2 me-2"></i>Đăng nhập</button>
     </form>
-    <p class="login-note">Dữ liệu được lưu trong hệ thống nội bộ của bạn.</p>
-  </div>
+    <div class="d-flex align-items-center justify-content-center gap-2 login-note"><i class="ti ti-shield-lock"></i><span>Dữ liệu chỉ được lưu trong hệ thống nội bộ</span></div>
+  </main>
 </body>
 </html>

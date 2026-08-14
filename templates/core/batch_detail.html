@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load baka_tags %}
+{% extends base_template %}{% load baka_tags %}
 {% block title %}Batch #{{ batch.pk }} · BAKA{% endblock %}
 {% block content %}
 <div class="page-header"><div><a class="back-link" href="{% url 'import-history' %}">← Lịch sử nhập</a><h1>Batch #{{ batch.pk }}</h1><p>{{ batch.platform.name }} · {{ batch.original_filename }}</p></div><div class="page-actions"><a class="btn btn-ai" href="?ai_summary=1">✦ Tóm tắt batch</a><span class="quality quality-{{ batch.status|lower }}">{{ batch.get_status_display }}</span></div></div>

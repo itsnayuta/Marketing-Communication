@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load baka_tags %}
+{% extends base_template %}{% load baka_tags %}
 {% block title %}Trợ lý dữ liệu · BAKA{% endblock %}
 {% block content %}
 <div class="page-header"><div><p class="eyebrow">AI</p><h1>Trợ lý dữ liệu</h1><p>AI chỉ đề xuất; bạn luôn là người xác nhận thay đổi.</p></div><span class="quality {% if ai_enabled %}quality-good{% else %}quality-warning{% endif %}">{% if ai_enabled %}AI sẵn sàng{% else %}AI đang tắt{% endif %}</span></div>

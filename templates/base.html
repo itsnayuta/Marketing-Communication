@@ -1,58 +1,109 @@
 {% load static baka_tags %}
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-bs-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
   <title>{% block title %}BAKA Data Center{% endblock %}</title>
-  <link href="{% static 'vendor/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/tabler/tabler.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/tabler/tabler-icons.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/app.css' %}" rel="stylesheet">
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
   {% block head %}{% endblock %}
 </head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <a class="brand" href="{% url 'dashboard' %}">
-        <span class="brand-mark">B</span><span>BAKA <small>DATA CENTER</small></span>
-      </a>
-      <nav class="sidebar-nav">
-        <p class="nav-section">Tổng quan</p>
-        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><span>◫</span> Dashboard</a>
-        <p class="nav-section">Trung tâm dữ liệu</p>
-        <a class="nav-link {% if request.resolver_match.url_name == 'orders' %}active{% endif %}" href="{% url 'orders' %}"><span>▤</span> Đơn hàng</a>
-        <a class="nav-link {% if 'import-' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'import-start' %}"><span>⇧</span> Nhập dữ liệu</a>
-        <a class="nav-link {% if request.resolver_match.url_name == 'import-history' or request.resolver_match.url_name == 'batch-detail' %}active{% endif %}" href="{% url 'import-history' %}"><span>◷</span> Lịch sử nhập</a>
-        <a class="nav-link {% if request.resolver_match.url_name == 'data-quality' %}active{% endif %}" href="{% url 'data-quality' %}"><span>◇</span> Chất lượng dữ liệu</a>
-        <p class="nav-section">Danh mục</p>
-        <a class="nav-link {% if request.resolver_match.url_name == 'products' %}active{% endif %}" href="{% url 'products' %}"><span>▦</span> Sản phẩm</a>
-        <a class="nav-link {% if request.resolver_match.url_name == 'product-aliases' %}active{% endif %}" href="{% url 'product-aliases' %}"><span>⇄</span> Mapping sản phẩm</a>
-        <a class="nav-link {% if request.resolver_match.url_name == 'mapping-profiles' %}active{% endif %}" href="{% url 'mapping-profiles' %}"><span>⌘</span> Mapping cột</a>
-        <p class="nav-section">AI</p>
-        <a class="nav-link {% if request.resolver_match.url_name == 'ai-assistant' %}active{% endif %}" href="{% url 'ai-assistant' %}"><span>✦</span> Trợ lý dữ liệu</a>
-        <p class="nav-section">Hệ thống</p>
-        <a class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" href="{% url 'settings' %}"><span>⚙</span> Cấu hình</a>
-      </nav>
+<body hx-boost="true" hx-target="#content" hx-select="#content" hx-swap="outerHTML" hx-indicator="#page-progress">
+  <div id="page-progress" class="page-progress htmx-indicator" aria-hidden="true"></div>
+  <div class="page app-page">
+    <aside class="navbar navbar-vertical navbar-expand-lg app-sidebar" data-bs-theme="dark">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="Mở điều hướng">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand navbar-brand-autodark app-brand" href="{% url 'dashboard' %}">
+          <span class="brand-symbol">B</span>
+          <span class="brand-copy"><b>BAKA</b><small>DATA CENTER</small></span>
+        </a>
+        <div class="navbar-nav flex-row d-lg-none ms-auto">
+          <span class="avatar avatar-sm bg-indigo-lt">{{ request.user.username|slice:':1'|upper }}</span>
+        </div>
+        <div class="collapse navbar-collapse" id="sidebar-menu">
+          <ul class="navbar-nav pt-lg-3">
+            <li class="nav-section-label">Tổng quan</li>
+            <li class="nav-item"><a data-nav="dashboard" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><span class="nav-link-icon"><i class="ti ti-layout-dashboard"></i></span><span class="nav-link-title">Dashboard</span></a></li>
+
+            <li class="nav-section-label">Trung tâm dữ liệu</li>
+            <li class="nav-item"><a data-nav="orders" class="nav-link {% if request.resolver_match.url_name == 'orders' or request.resolver_match.url_name == 'order-detail' %}active{% endif %}" href="{% url 'orders' %}"><span class="nav-link-icon"><i class="ti ti-shopping-bag"></i></span><span class="nav-link-title">Đơn hàng</span></a></li>
+            <li class="nav-item"><a data-nav="import" class="nav-link {% if 'import-' in request.resolver_match.url_name and request.resolver_match.url_name != 'import-history' %}active{% endif %}" href="{% url 'import-start' %}"><span class="nav-link-icon"><i class="ti ti-file-upload"></i></span><span class="nav-link-title">Nhập dữ liệu</span></a></li>
+            <li class="nav-item"><a data-nav="history" class="nav-link {% if request.resolver_match.url_name == 'import-history' or request.resolver_match.url_name == 'batch-detail' %}active{% endif %}" href="{% url 'import-history' %}"><span class="nav-link-icon"><i class="ti ti-history"></i></span><span class="nav-link-title">Lịch sử nhập</span></a></li>
+            <li class="nav-item"><a data-nav="quality" class="nav-link {% if request.resolver_match.url_name == 'data-quality' %}active{% endif %}" href="{% url 'data-quality' %}"><span class="nav-link-icon"><i class="ti ti-shield-check"></i></span><span class="nav-link-title">Chất lượng dữ liệu</span></a></li>
+
+            <li class="nav-section-label">Danh mục</li>
+            <li class="nav-item"><a data-nav="products" class="nav-link {% if request.resolver_match.url_name == 'products' %}active{% endif %}" href="{% url 'products' %}"><span class="nav-link-icon"><i class="ti ti-package"></i></span><span class="nav-link-title">Sản phẩm</span></a></li>
+            <li class="nav-item"><a data-nav="aliases" class="nav-link {% if request.resolver_match.url_name == 'product-aliases' %}active{% endif %}" href="{% url 'product-aliases' %}"><span class="nav-link-icon"><i class="ti ti-git-merge"></i></span><span class="nav-link-title">Mapping sản phẩm</span></a></li>
+            <li class="nav-item"><a data-nav="mappings" class="nav-link {% if request.resolver_match.url_name == 'mapping-profiles' %}active{% endif %}" href="{% url 'mapping-profiles' %}"><span class="nav-link-icon"><i class="ti ti-arrows-exchange"></i></span><span class="nav-link-title">Mapping cột</span></a></li>
+
+            <li class="nav-section-label">Công cụ</li>
+            <li class="nav-item"><a data-nav="ai" class="nav-link {% if request.resolver_match.url_name == 'ai-assistant' %}active{% endif %}" href="{% url 'ai-assistant' %}"><span class="nav-link-icon"><i class="ti ti-sparkles"></i></span><span class="nav-link-title">Trợ lý dữ liệu</span><span class="badge bg-indigo-lt ms-auto">AI</span></a></li>
+            <li class="nav-item"><a data-nav="settings" class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" href="{% url 'settings' %}"><span class="nav-link-icon"><i class="ti ti-settings"></i></span><span class="nav-link-title">Cấu hình</span></a></li>
+          </ul>
+
+          <div class="sidebar-footer mt-auto">
+            <div class="d-flex align-items-center gap-2">
+              <span class="status-indicator status-green status-indicator-animated"><span class="status-indicator-circle"></span><span class="status-indicator-circle"></span><span class="status-indicator-circle"></span></span>
+              <div><strong>Hệ thống hoạt động</strong><small>Dữ liệu được lưu nội bộ</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </aside>
-    <div class="main-wrap">
-      <header class="topbar">
-        <button class="sidebar-toggle" type="button" aria-label="Mở menu" onclick="document.body.classList.toggle('sidebar-open')">☰</button>
-        <div class="topbar-title">Trung tâm vận hành dữ liệu</div>
-        <div class="user-menu">
-          <span class="status-dot"></span>
-          <span>{{ request.user.get_full_name|default:request.user.username }}</span>
-          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn-link" type="submit">Đăng xuất</button></form>
+
+    <div class="page-wrapper app-wrapper">
+      <header class="navbar navbar-expand-md d-print-none app-topbar">
+        <div class="container-fluid">
+          <div class="topbar-context">
+            <span class="context-kicker">Workspace</span>
+            <strong>Trung tâm vận hành dữ liệu</strong>
+          </div>
+          <div class="navbar-nav flex-row order-md-last align-items-center">
+            <div class="nav-item d-none d-md-flex me-3">
+              <span class="badge badge-outline text-green"><span class="status-dot status-dot-animated bg-green me-2"></span>Local-first</span>
+            </div>
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Mở menu tài khoản">
+                <span class="avatar avatar-sm bg-indigo-lt">{{ request.user.username|slice:':1'|upper }}</span>
+                <div class="d-none d-xl-block ps-2">
+                  <div class="user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+                  <div class="text-secondary small">{% if request.user.is_superuser %}Administrator{% else %}Người dùng nội bộ{% endif %}</div>
+                </div>
+                <i class="ti ti-chevron-down ms-2 text-secondary d-none d-xl-block"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <a href="{% url 'settings' %}" class="dropdown-item"><i class="ti ti-settings me-2"></i>Cấu hình</a>
+                {% if request.user.is_staff %}<a href="/admin/" hx-boost="false" class="dropdown-item"><i class="ti ti-tool me-2"></i>Technical Admin</a>{% endif %}
+                <div class="dropdown-divider"></div>
+                <form method="post" action="{% url 'logout' %}" hx-boost="false">{% csrf_token %}<button class="dropdown-item text-danger" type="submit"><i class="ti ti-logout me-2"></i>Đăng xuất</button></form>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
-      <main class="content">
-        {% if messages %}
-          {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show">{{ message }}<button class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
-        {% endif %}
-        {% block content %}{% endblock %}
+
+      <main class="page-body app-content" id="content" aria-live="polite">
+        <div class="container-fluid app-container">
+          {% if messages %}
+            <div class="message-stack">{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible" role="alert"><div class="d-flex"><div><i class="ti ti-info-circle alert-icon"></i></div><div>{{ message }}</div></div><button class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button></div>{% endfor %}</div>
+          {% endif %}
+          {% block content %}{% endblock %}
+        </div>
       </main>
     </div>
   </div>
-  <script src="{% static 'vendor/bootstrap.bundle.min.js' %}"></script>
+
+  <script src="{% static 'vendor/chart.umd.min.js' %}"></script>
+  <script src="{% static 'vendor/tabler/tabler.min.js' %}"></script>
+  <script src="{% static 'js/dashboard.js' %}"></script>
+  <script src="{% static 'js/app.js' %}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

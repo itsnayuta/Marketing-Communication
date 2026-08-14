@@ -1,7 +1,6 @@
-{% extends 'base.html' %}
+{% extends base_template %}
 {% block title %}Mapping cột · BAKA{% endblock %}
 {% block content %}
 <div class="page-header"><div><p class="eyebrow">Danh mục</p><h1>Mapping cột</h1><p>Cấu hình được lưu khi thực hiện Import Wizard.</p></div><a class="btn btn-primary" href="{% url 'import-start' %}">Tạo qua Import Wizard</a></div>
 <div class="profile-grid">{% for profile in profiles %}<article class="panel"><div class="panel-head"><div><h2>{{ profile.name }}</h2><p>{{ profile.platform.name }} · Version {{ profile.version }}</p></div>{% if profile.is_default %}<span class="quality quality-good">Mặc định</span>{% endif %}</div><div class="mapping-mini">{% for rule in profile.rules.all %}<div><code>{{ rule.source_column }}</code><span>→</span><b>{{ rule.target_field }}</b></div>{% endfor %}</div></article>{% empty %}<div class="panel empty-state">Chưa có mapping profile.</div>{% endfor %}</div>
 {% endblock %}
-

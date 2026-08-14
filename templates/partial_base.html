@@ -1,0 +1,9 @@
+<main class="page-body app-content" id="content" aria-live="polite">
+  <div class="container-fluid app-container">
+    {% if messages %}
+      <div class="message-stack">{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible" role="alert"><div class="d-flex"><div><i class="ti ti-info-circle alert-icon"></i></div><div>{{ message }}</div></div><button class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button></div>{% endfor %}</div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </div>
+</main>
+

@@ -46,6 +46,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.ui_shell",
             ],
         },
     }
@@ -99,4 +100,3 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
 AI_ENABLED = env_bool("AI_ENABLED", False)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5-mini")
-

@@ -1,6 +1,6 @@
 # BAKA Data Center
 
-BAKA Data Center là ứng dụng nội bộ local-first để nhập, chuẩn hóa, kiểm tra và phân tích dữ liệu đơn hàng từ TikTok, Shopee, Facebook, Zalo và các nguồn khác. Ứng dụng là một Django monolith, render giao diện bằng Django Templates, dùng PostgreSQL làm dữ liệu chuẩn và giữ nguyên mọi RAW row để truy vết. Bootstrap, HTMX và Chart.js đã được vendored nên giao diện không phụ thuộc CDN khi chạy local.
+BAKA Data Center là ứng dụng nội bộ local-first để nhập, chuẩn hóa, kiểm tra và phân tích dữ liệu đơn hàng từ TikTok, Shopee, Facebook, Zalo và các nguồn khác. Ứng dụng là một Django monolith, render giao diện bằng Django Templates, dùng PostgreSQL làm dữ liệu chuẩn và giữ nguyên mọi RAW row để truy vết. Tabler UI, Tabler Icons, HTMX và Chart.js đã được vendored nên giao diện không phụ thuộc CDN khi chạy local.
 
 ## 1. Cài đặt
 

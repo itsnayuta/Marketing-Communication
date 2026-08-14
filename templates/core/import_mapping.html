@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends base_template %}
 {% block title %}Mapping cột · BAKA{% endblock %}
 {% block content %}
 <div class="page-header"><div><p class="eyebrow">Import Wizard · Bước 3/5</p><h1>Column Mapping</h1><p>{{ batch.platform.name }} · {{ batch.original_filename }} · {{ batch.total_rows }} dòng</p></div><form method="post">{% csrf_token %}<input type="hidden" name="action" value="ai"><button class="btn btn-ai" type="submit">✦ Gợi ý mapping</button></form></div>
@@ -9,4 +9,3 @@
   <div class="form-actions"><a class="btn btn-light" href="{% url 'import-upload' %}?platform={{ batch.platform_id }}">Quay lại</a><button class="btn btn-primary">Tạo bản xem trước →</button></div>
 </form></div>
 {% endblock %}
-
